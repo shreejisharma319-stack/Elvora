@@ -7,35 +7,30 @@ import time
 st.set_page_config(page_title="Smart Study Assistant", layout="wide", page_icon="🎓")
 
 # --- THEME SELECTION ---
-# Check if theme is selected in session state, otherwise default to Dark / Blue
 if 'selected_theme' not in st.session_state:
-    st.session_state.selected_theme = "Dark / Blue"
+    st.session_state.selected_theme = "Playful Tech Blue"
 
-# Dynamic Theme Colors
-if st.session_state.selected_theme == "Light":
-    bg_color = "#FFFFFF"
-    text_color = "#222222"
-    card_bg = "linear-gradient(135deg, #E3F2FD, #F5F5F5)"
-    btn_bg = "#2196F3"
-elif st.session_state.selected_theme == "Vibrant & Colorful":
-    bg_color = "#FFF0F5"
-    text_color = "#2B0B3A"
-    card_bg = "linear-gradient(135deg, #FF6B6B, #FF8E53, #FFD93D)"
-    btn_bg = "#FF4B4B"
-else:  # Dark / Blue
-    bg_color = "#f8f9fa"
-    text_color = "#333333"
-    card_bg = "linear-gradient(135deg, #6C63FF, #3F3D56)"
-    btn_bg = "#6C63FF"
+if st.session_state.selected_theme == "Luxury Burgundy":
+    bg_color = "#1A0307"
+    text_color = "#F4E3D7"
+    card_bg = "linear-gradient(135deg, #3B0D16, #24050C)"
+    btn_bg = "#6E1B2A"
+    card_border = "#4A121E"
+elif st.session_state.selected_theme == "Playful Tech Blue":
+    bg_color = "#EBF4FF"
+    text_color = "#1E293B"
+    card_bg = "linear-gradient(135deg, #60A5FA, #3B82F6)"
+    btn_bg = "#2563EB"
+    card_border = "#93C5FD"
 
 # Custom Styling Injection
 st.markdown(f"""
     <style>
-    .main {{ background-color: {bg_color}; color: {text_color}; }}
+    .stApp {{ background-color: {bg_color}; color: {text_color}; }}
     .stButton>button {{ width: 100%; border-radius: 12px; height: 3.5em; background-color: {btn_bg}; color: white; border: none; font-weight: bold; }}
-    .welcome-card {{ background: {card_bg}; color: white; padding: 30px; border-radius: 20px; text-align: center; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }}
-    .user-msg {{ background-color: #E3F2FD; padding: 15px; border-radius: 15px; margin-bottom: 10px; border-left: 5px solid #2196F3; color: #1565C0; }}
-    .bot-msg {{ background-color: #FFFFFF; padding: 15px; border-radius: 10px; border: 1px solid #E0E0E0; margin-bottom: 20px; border-left: 5px solid {btn_bg}; color: #333; }}
+    .welcome-card {{ background: {card_bg}; color: white; padding: 30px; border-radius: 20px; text-align: center; margin-bottom: 25px; border: 1px solid {card_border}; }}
+    .user-msg {{ background-color: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 15px; margin-bottom: 10px; border-left: 5px solid {btn_bg}; }}
+    .bot-msg {{ background-color: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 10px; border: 1px solid {card_border}; margin-bottom: 20px; }}
     </style>
     """, unsafe_allow_html=True)
 
