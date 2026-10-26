@@ -1,7 +1,14 @@
 import streamlit as st
 from openai import OpenAI
+import base64
 import random
-import time
+import time 
+#API Key Setup
+api_key = st.secrets.get("USER_API_KEY","")
+client = openai.OpenAI(api_key=api_key)
+
+def encode_image(uploaded_file):
+    return base64.b64encode(uploaded_file.read()).decode('utf_8')
 
 # 1. Page Configuration
 st.set_page_config(page_title="Smart Study Assistant", layout="wide", page_icon="🎓")
@@ -78,8 +85,8 @@ st.sidebar.subheader("🎨 App Theme Vibe")
 theme_choice = st.sidebar.radio(
     "Select Aesthetic",
     ["Playful Tech Blue", "Luxury Burgundy"],
-    index=0 if st.session_state.selected_theme == "Playful Tech Blue" else 1 )
-
+    index=0 if st.session_state.selected_theme == "Playful Tech Blue" else 1 
+)
 
 if theme_choice != st.session_state.selected_theme:
     st.session_state.selected_theme = theme_choice
