@@ -6,33 +6,84 @@ import time
 # 1. Page Configuration
 st.set_page_config(page_title="Smart Study Assistant", layout="wide", page_icon="🎓")
 
-# --- THEME SELECTION ---
+# ==========================================
+# 🎨 DYNAMIC THEME SYSTEM & STYLING
+# ==========================================
+
+# 1. Initialize Theme Session State
 if 'selected_theme' not in st.session_state:
     st.session_state.selected_theme = "Playful Tech Blue"
 
+# 2. Theme Color Definitions
 if st.session_state.selected_theme == "Luxury Burgundy":
     bg_color = "#1A0307"
     text_color = "#F4E3D7"
     card_bg = "linear-gradient(135deg, #3B0D16, #24050C)"
     btn_bg = "#6E1B2A"
     card_border = "#4A121E"
-elif st.session_state.selected_theme == "Playful Tech Blue":
+else:  # Playful Tech Blue (Default)
     bg_color = "#EBF4FF"
     text_color = "#1E293B"
     card_bg = "linear-gradient(135deg, #60A5FA, #3B82F6)"
     btn_bg = "#2563EB"
     card_border = "#93C5FD"
 
-# Custom Styling Injection
+# 3. Custom CSS Injection
 st.markdown(f"""
     <style>
-    .stApp {{ background-color: {bg_color}; color: {text_color}; }}
-    .stButton>button {{ width: 100%; border-radius: 12px; height: 3.5em; background-color: {btn_bg}; color: white; border: none; font-weight: bold; }}
-    .welcome-card {{ background: {card_bg}; color: white; padding: 30px; border-radius: 20px; text-align: center; margin-bottom: 25px; border: 1px solid {card_border}; }}
-    .user-msg {{ background-color: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 15px; margin-bottom: 10px; border-left: 5px solid {btn_bg}; }}
-    .bot-msg {{ background-color: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 10px; border: 1px solid {card_border}; margin-bottom: 20px; }}
+    .stApp {{
+        background-color: {bg_color};
+        color: {text_color};
+    }}
+    .stButton>button {{
+        width: 100%;
+        border-radius: 12px;
+        height: 3.5em;
+        background-color: {btn_bg};
+        color: white;
+        border: none;
+        font-weight: bold;
+    }}
+    .welcome-card {{
+        background: {card_bg};
+        color: white;
+        padding: 30px;
+        border-radius: 20px;
+        text-align: center;
+        margin-bottom: 25px;
+        border: 1px solid {card_border};
+    }}
+    .user-msg {{
+        background-color: rgba(255, 255, 255, 0.15);
+        padding: 15px;
+        border-radius: 15px;
+        margin-bottom: 10px;
+        border-left: 5px solid {btn_bg};
+        color: {text_color};
+    }}
+    .bot-msg {{
+        background-color: rgba(255, 255, 255, 0.08);
+        padding: 15px;
+        border-radius: 10px;
+        border: 1px solid {card_border};
+        margin-bottom: 20px;
+        color: {text_color};
+    }}
     </style>
-    """, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
+
+# 4. Sidebar Theme Picker
+st.sidebar.markdown("---")
+st.sidebar.subheader("🎨 App Theme Vibe")
+theme_choice = st.sidebar.radio(
+    "Select Aesthetic",
+    ["Playful Tech Blue", "Luxury Burgundy"],
+    index=0 if st.session_state.selected_theme == "Playful Tech Blue" else 1
+)
+
+if theme_choice != st.session_state.selected_theme:
+    st.session_state.selected_theme = theme_choice
+    st.rerun()
 
 # --- 2. SAFE API KEY PLACEHOLDER ---
 USER_API_KEY = st.secrets.get("USER_API_KEY", "sk-proj-PASTE_YOUR_ACTUAL_KEY_HERE")
