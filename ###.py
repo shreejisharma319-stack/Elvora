@@ -272,7 +272,7 @@ Add instructions at top and 'End of Paper' at bottom."""
             st.text_area("Final Term Paper", st.session_state.paper_raw, height=450)
             st.download_button("📥 Download Paper (TXT)", st.session_state.paper_raw, file_name=f"Practise_{sub_choice}_Paper.txt")
 
-    # 4. SMART TUTOR MODULE
+   # 4. SMART TUTOR MODULE
     elif mode == "💬 Smart Tutor":
         st.subheader("💬 Ask Your Tutor")
         uploaded_image = st.file_uploader("📷 Upload an image of a problem, diagram, or textbook question (optional)", type=["png", "jpg", "jpeg"])
@@ -285,12 +285,18 @@ Add instructions at top and 'End of Paper' at bottom."""
 
         if 'chat_history' not in st.session_state:
             st.session_state.chat_history = []
+        if 'last_processed_file' not in st.session_state:
+            st.session_state.last_processed_file = None
 
         for chat in st.session_state.chat_history:
             st.markdown(f'<div class="user-msg"><b>🙋 You:</b> {chat["question"]}</div>', unsafe_allow_html=True)
             st.markdown(f'<div class="bot-msg"><b>🤖 Tutor:</b><br>{chat["answer"]}</div>', unsafe_allow_html=True)
             
-        if p or uploaded_image:
+        # Check if we have a new prompt OR a new unhandled image
+        current_file_id = uploaded_image.file_id if uploaded_image else None
+        is_new_image = current_file_id and current_file_id != st.session_state.last_processed_file
+
+        if p or is_new_image:
             display_text = p if p else "[Uploaded Image with no text]"
             
             if uploaded_image:
@@ -302,6 +308,7 @@ Add instructions at top and 'End of Paper' at bottom."""
                         "image_url": {"url": f"data:image/jpeg;base64,{base64_img}"}
                     }
                 ]
+                st.session_state.last_processed_file = current_file_id
             else:
                 user_content = p
 
