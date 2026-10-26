@@ -78,8 +78,8 @@ st.sidebar.subheader("🎨 App Theme Vibe")
 theme_choice = st.sidebar.radio(
     "Select Aesthetic",
     ["Playful Tech Blue", "Luxury Burgundy"],
-    index=0 if st.session_state.selected_theme == "Playful Tech Blue" else 1
-)
+    index=0 if st.session_state.selected_theme == "Playful Tech Blue" else 1 )
+
 
 if theme_choice != st.session_state.selected_theme:
     st.session_state.selected_theme = theme_choice
