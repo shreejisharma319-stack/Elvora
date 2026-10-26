@@ -3,12 +3,13 @@ from openai import OpenAI
 import base64
 import random
 import time 
+
 #API Key Setup
 api_key = st.secrets.get("USER_API_KEY","")
-client = openai.OpenAI(api_key=api_key)
+client = OpenAI(api_key=api_key)
 
 def encode_image(uploaded_file):
-    return base64.b64encode(uploaded_file.read()).decode('utf_8')
+    return base64.b64encode(uploaded_file.read()).decode('utf-8')
 
 # 1. Page Configuration
 st.set_page_config(page_title="Smart Study Assistant", layout="wide", page_icon="🎓")
@@ -92,8 +93,6 @@ if theme_choice != st.session_state.selected_theme:
     st.session_state.selected_theme = theme_choice
     st.rerun()
 
-# --- 2. SAFE API KEY PLACEHOLDER ---
-USER_API_KEY = st.secrets.get("USER_API_KEY", "sk-proj-PASTE_YOUR_ACTUAL_KEY_HERE")
 # 3. Permanent Memory Setup
 if 'chat_history' not in st.session_state: st.session_state.chat_history = []
 if 'quiz_raw' not in st.session_state: st.session_state.quiz_raw = None
@@ -136,8 +135,6 @@ if 'current_quote' not in st.session_state:
     st.session_state.current_quote = random.choice(quotes)
 
 try:
-    client = OpenAI(api_key=USER_API_KEY)
-
     # --- SIDEBAR NAV ---
     with st.sidebar:
         st.title("⚙️ Study Settings")
@@ -276,48 +273,48 @@ Add instructions at top and 'End of Paper' at bottom."""
             st.download_button("📥 Download Paper (TXT)", st.session_state.paper_raw, file_name=f"Practise_{sub_choice}_Paper.txt")
 
     # 4. SMART TUTOR MODULE
-elif mode == "💬 Smart Tutor":
-    st.subheader("💬 Ask Your Tutor")
-    uploaded_image = st.file_uploader("📷 Upload an image of a problem, diagram, or textbook question (optional)", type=["png", "jpg", "jpeg"])
-    
-    if uploaded_image:
-        st.image(uploaded_image, caption="Uploaded Problem Image", use_container_width=True)
-        uploaded_image.seek(0)
-
-    p = st.chat_input("Ask a question or explain the uploaded image...")
-
-    if 'chat_history' not in st.session_state:
-        st.session_state.chat_history = []
-
-    for chat in st.session_state.chat_history:
-        st.markdown(f'<div class="user-msg"><b>🙋 You:</b> {chat["question"]}</div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="bot-msg"><b>🤖 Tutor:</b><br>{chat["answer"]}</div>', unsafe_allow_html=True)
-        
-    if p or uploaded_image:
-        display_text = p if p else "[Uploaded Image with no text]"
+    elif mode == "💬 Smart Tutor":
+        st.subheader("💬 Ask Your Tutor")
+        uploaded_image = st.file_uploader("📷 Upload an image of a problem, diagram, or textbook question (optional)", type=["png", "jpg", "jpeg"])
         
         if uploaded_image:
-            base64_img = encode_image(uploaded_image)
-            user_content = [
-                {"type": "text", "text": p if p else "Please solve or explain this image for me in detail."},
-                {
-                    "type": "image_url",
-                    "image_url": {"url": f"data:image/jpeg;base64,{base64_img}"}
-                }
-            ]
-        else:
-            user_content = p
+            st.image(uploaded_image, caption="Uploaded Problem Image", use_container_width=True)
+            uploaded_image.seek(0)
 
-        with st.spinner("AI Tutor is analyzing..."):
-            stream = client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=[{"role": "user", "content": user_content}],
-                stream=True
-            )
-            ai_response = st.write_stream(stream)
+        p = st.chat_input("Ask a question or explain the uploaded image...")
+
+        if 'chat_history' not in st.session_state:
+            st.session_state.chat_history = []
+
+        for chat in st.session_state.chat_history:
+            st.markdown(f'<div class="user-msg"><b>🙋 You:</b> {chat["question"]}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="bot-msg"><b>🤖 Tutor:</b><br>{chat["answer"]}</div>', unsafe_allow_html=True)
             
-        st.session_state.chat_history.append({"question": display_text, "answer": ai_response})
-        st.rerun()
+        if p or uploaded_image:
+            display_text = p if p else "[Uploaded Image with no text]"
+            
+            if uploaded_image:
+                base64_img = encode_image(uploaded_image)
+                user_content = [
+                    {"type": "text", "text": p if p else "Please solve or explain this image for me in detail."},
+                    {
+                        "type": "image_url",
+                        "image_url": {"url": f"data:image/jpeg;base64,{base64_img}"}
+                    }
+                ]
+            else:
+                user_content = p
+
+            with st.spinner("AI Tutor is analyzing..."):
+                stream = client.chat.completions.create(
+                    model="gpt-4o-mini",
+                    messages=[{"role": "user", "content": user_content}],
+                    stream=True
+                )
+                ai_response = st.write_stream(stream)
+                
+            st.session_state.chat_history.append({"question": display_text, "answer": ai_response})
+            st.rerun()
 
     # 5. STUDY TIMETABLE MODULE
     elif mode == "📅 Study Timetable":
@@ -336,4 +333,4 @@ Make it structured day-by-day (Monday to Sunday) with time blocks, strategies, a
             st.download_button("📥 Download Timetable (TXT)", st.session_state.timetable_raw, file_name=f"{sub_choice}_Preparation_Plan.txt")
 
 except Exception as e:
-    st.error(f"⚠️ Connection Error: {e}") 
+    st.error(f"⚠️ Connection Error: {e}")
